@@ -1,4 +1,4 @@
-package br.com.paulo.securityJwt;
+package br.com.paulo.security.jwt;
 
 import br.com.paulo.data.vo.v1.security.TokenVO;
 import br.com.paulo.exceptions.InvalidJwtAuthenticationException;
@@ -27,7 +27,7 @@ public class JwtTokenProvider {
     @Value("${security.jwt.token.secret-key:secret}")
     private String secretKey = "secret";
 
-    @Value("${security.jwt.token.secret-key:3600000}")
+    @Value("${security.jwt.token.expire-length:3600000}")
     private long validityInMilliseconds = 3600000; // 1h
 
     @Autowired
