@@ -27,7 +27,7 @@ import java.io.IOException;
 
 @SpringBootTest(classes = Startup.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class PersonControllerJsonTest{
+public class PersonControllerJsonTest {
 
     private static RequestSpecification specification;
     private static ObjectMapper objectMapper;

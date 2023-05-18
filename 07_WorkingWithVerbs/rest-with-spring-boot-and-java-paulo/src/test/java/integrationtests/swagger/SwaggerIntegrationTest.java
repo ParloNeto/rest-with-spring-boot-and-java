@@ -2,14 +2,15 @@ package integrationtests.swagger;
 
 import static io.restassured.RestAssured.given;
 
+import br.com.paulo.Startup;
 import configs.TestConfigs;
 import integrationtests.testcontainers.AbstractIntegrationTest;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class SwaggerIntegrationTest extends AbstractIntegrationTest {
+@SpringBootTest(classes = Startup.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+public class SwaggerIntegrationTest {
 
 	@Test
 	public void shouldDisplaySwaggerUiPage() {
