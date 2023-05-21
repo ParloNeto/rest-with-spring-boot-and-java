@@ -1,10 +1,15 @@
-package integrationtests.controller.withjson;
+package integrationtests.controller.withxml;
 
 import br.com.paulo.Startup;
 import configs.TestConfigs;
-import integrationtests.testcontainers.AbstractIntegrationTest;
 import integrationtests.vo.AccountCredentialsVO;
 import integrationtests.vo.TokenVO;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.filter.log.LogDetail;
+import io.restassured.filter.log.RequestLoggingFilter;
+import io.restassured.filter.log.ResponseLoggingFilter;
+import io.restassured.specification.RequestSpecification;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -19,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(classes = Startup.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AuthControllerJsonText {
+public class AuthControllerXmlText {
 
     private static TokenVO tokenVO;
 
@@ -29,10 +34,11 @@ public class AuthControllerJsonText {
 
         AccountCredentialsVO user = new AccountCredentialsVO("leandro", "admin123");
 
+
        tokenVO = given()
                 .basePath("/auth/signin")
                 .port(TestConfigs.SERVER_PORT)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .contentType(TestConfigs.CONTENT_TYPE_XML)
                 .body(user)
                 .when()
                 .post()
@@ -55,7 +61,7 @@ public class AuthControllerJsonText {
         var newTokenVO = given()
                 .basePath("/auth/refresh")
                 .port(TestConfigs.SERVER_PORT)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .contentType(TestConfigs.CONTENT_TYPE_XML)
                     .pathParam("username", tokenVO.getUsername())
                     .header(TestConfigs.HEADER_PARAM_AUTHORIZATION, "Bearer " + tokenVO.getRefreshToken())
                 .when()
