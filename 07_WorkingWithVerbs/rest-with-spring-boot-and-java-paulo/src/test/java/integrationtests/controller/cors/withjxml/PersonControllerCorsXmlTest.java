@@ -1,25 +1,23 @@
-package integrationtests.controller.withjson;
+package integrationtests.controller.cors.withjxml;
 
 
 import br.com.paulo.Startup;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import configs.TestConfigs;
 import integrationtests.vo.AccountCredentialsVO;
 import integrationtests.vo.PersonVO;
 import integrationtests.vo.TokenVO;
 import io.restassured.builder.RequestSpecBuilder;
-
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = Startup.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class PersonControllerJsonTest {
+public class PersonControllerCorsXmlTest {
 
     private static RequestSpecification specification;
     private static ObjectMapper objectMapper;
@@ -52,7 +50,7 @@ public class PersonControllerJsonTest {
         var accessToken = given()
                 .basePath("/auth/signin")
                 .port(TestConfigs.SERVER_PORT)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .contentType(TestConfigs.CONTENT_TYPE_XML)
                 .body(user)
                 .when()
                 .post()
@@ -78,7 +76,7 @@ public class PersonControllerJsonTest {
         mockPerson();
 
         var content = given().spec(specification)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .contentType(TestConfigs.CONTENT_TYPE_XML)
                 .body(person)
                 .when()
                 .post()
@@ -112,7 +110,7 @@ public class PersonControllerJsonTest {
         mockPerson();
 
         var content = given().spec(specification)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .contentType(TestConfigs.CONTENT_TYPE_XML)
                 .header(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_PAULO)
                 .pathParam("id", person.getId())
                 .when()
@@ -148,7 +146,7 @@ public class PersonControllerJsonTest {
         person.setFirstName("Neymar");
 
         var content = given().spec(specification)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .contentType(TestConfigs.CONTENT_TYPE_XML)
                 .body(person)
                 .when()
                 .post()
@@ -182,7 +180,7 @@ public class PersonControllerJsonTest {
         mockPerson();
 
         var content = given(specification)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .contentType(TestConfigs.CONTENT_TYPE_XML)
                 .header(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_PAULO)
                 .pathParam("id", person.getId())
                 .when()
@@ -203,7 +201,7 @@ public class PersonControllerJsonTest {
     public void testFindAll() throws JsonMappingException, JsonProcessingException  {
 
         var content = given().spec(specification)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .contentType(TestConfigs.CONTENT_TYPE_XML)
                 .header(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_PAULO)
                 .when()
                 .get()
@@ -223,14 +221,14 @@ public class PersonControllerJsonTest {
         assertNotNull(foundPersonOne.getAddress());
         assertNotNull(foundPersonOne.getGender());
 
-        assertEquals(3, foundPersonOne.getId());
+        assertEquals(2, foundPersonOne.getId());
 
-        assertEquals("Paulo", foundPersonOne.getFirstName());
-        assertEquals("Dybala", foundPersonOne.getLastName());
-        assertEquals("Roma - Italy", foundPersonOne.getAddress());
+        assertEquals("Zé", foundPersonOne.getFirstName());
+        assertEquals("Roberto", foundPersonOne.getLastName());
+        assertEquals("São Paulo", foundPersonOne.getAddress());
         assertEquals("Male", foundPersonOne.getGender());
 
-        PersonVO foundPersonSix = people.get(3);
+        PersonVO foundPersonSix = people.get(4);
 
         assertNotNull(foundPersonSix.getId());
         assertNotNull(foundPersonSix.getFirstName());
@@ -259,7 +257,7 @@ public class PersonControllerJsonTest {
                 .build();
 
         var content = given().spec(specificationWithoutToken)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .contentType(TestConfigs.CONTENT_TYPE_XML)
                 .header(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_PAULO)
                 .when()
                 .get()
