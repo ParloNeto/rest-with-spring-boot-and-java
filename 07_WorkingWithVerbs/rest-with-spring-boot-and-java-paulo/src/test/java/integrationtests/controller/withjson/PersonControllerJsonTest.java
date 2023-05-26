@@ -98,6 +98,7 @@ public class PersonControllerJsonTest {
         assertNotNull(persistedPerson.getLastName());
         assertNotNull(persistedPerson.getAddress());
         assertNotNull(persistedPerson.getGender());
+        assertTrue(persistedPerson.getEnabled());
 
         assertTrue(persistedPerson.getId() > 0);
 
@@ -108,6 +109,42 @@ public class PersonControllerJsonTest {
     }
     @Test
     @Order(2)
+    public void testDisablePersonById() throws IOException {
+
+        var content = given().spec(specification)
+                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .header(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_PAULO)
+                .pathParam("id", person.getId())
+                .when()
+                .patch("{id}")
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .asString();
+
+        PersonVO persistedPerson = objectMapper.readValue(content, PersonVO.class);
+        person = persistedPerson;
+
+        assertNotNull(persistedPerson);
+
+        assertNotNull(persistedPerson.getId());
+        assertNotNull(persistedPerson.getFirstName());
+        assertNotNull(persistedPerson.getLastName());
+        assertNotNull(persistedPerson.getAddress());
+        assertNotNull(persistedPerson.getGender());
+        assertFalse(persistedPerson.getEnabled());
+
+        assertTrue(persistedPerson.getId() > 0);
+
+        assertEquals("Richard", persistedPerson.getFirstName());
+        assertEquals("Stallman", persistedPerson.getLastName());
+        assertEquals("New York City, New York, US", persistedPerson.getAddress());
+        assertEquals("Male", persistedPerson.getGender());
+    }
+
+    @Test
+    @Order(3)
     public void testFindById() throws IOException {
         mockPerson();
 
@@ -133,6 +170,7 @@ public class PersonControllerJsonTest {
         assertNotNull(persistedPerson.getLastName());
         assertNotNull(persistedPerson.getAddress());
         assertNotNull(persistedPerson.getGender());
+        assertFalse(persistedPerson.getEnabled());
 
         assertTrue(persistedPerson.getId() > 0);
 
@@ -143,7 +181,7 @@ public class PersonControllerJsonTest {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     public void testUpdate() throws IOException {
         person.setFirstName("Neymar");
 
@@ -167,6 +205,7 @@ public class PersonControllerJsonTest {
         assertNotNull(persistedPerson.getLastName());
         assertNotNull(persistedPerson.getAddress());
         assertNotNull(persistedPerson.getGender());
+        assertFalse(persistedPerson.getEnabled());
 
         assertEquals(person.getId(), persistedPerson.getId());
 
@@ -177,7 +216,7 @@ public class PersonControllerJsonTest {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     public void testDelete() throws JsonMappingException, JsonProcessingException {
         mockPerson();
 
@@ -199,7 +238,7 @@ public class PersonControllerJsonTest {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     public void testFindAll() throws JsonMappingException, JsonProcessingException  {
 
         var content = given().spec(specification)
@@ -248,7 +287,7 @@ public class PersonControllerJsonTest {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     public void testFindAllWithoutToken() throws JsonMappingException, JsonProcessingException  {
 
         RequestSpecification specificationWithoutToken = new RequestSpecBuilder()
@@ -274,6 +313,7 @@ public class PersonControllerJsonTest {
         person.setLastName("Stallman");
         person.setAddress("New York City, New York, US");
         person.setGender("Male");
+        person.setEnabled(true);
     }
 
 }
