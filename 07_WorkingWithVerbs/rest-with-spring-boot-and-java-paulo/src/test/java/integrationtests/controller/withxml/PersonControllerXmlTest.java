@@ -1,10 +1,9 @@
 package integrationtests.controller.withxml;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.IOException;
 import java.util.List;
 
 import br.com.paulo.Startup;
@@ -107,6 +106,7 @@ public class PersonControllerXmlTest {
         assertNotNull(persistedPerson.getLastName());
         assertNotNull(persistedPerson.getAddress());
         assertNotNull(persistedPerson.getGender());
+        assertTrue(persistedPerson.getEnabled());
 
         assertTrue(persistedPerson.getId() > 0);
 
@@ -118,6 +118,43 @@ public class PersonControllerXmlTest {
 
     @Test
     @Order(2)
+    public void testDisablePersonById() throws IOException {
+
+        var content = given().spec(specification)
+                .contentType(TestConfigs.CONTENT_TYPE_XML)
+                .accept(TestConfigs.CONTENT_TYPE_XML)
+                .header(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_PAULO)
+                .pathParam("id", person.getId())
+                .when()
+                .patch("{id}")
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .asString();
+
+        PersonVO persistedPerson = objectMapper.readValue(content, PersonVO.class);
+        person = persistedPerson;
+
+        assertNotNull(persistedPerson);
+
+        assertNotNull(persistedPerson.getId());
+        assertNotNull(persistedPerson.getFirstName());
+        assertNotNull(persistedPerson.getLastName());
+        assertNotNull(persistedPerson.getAddress());
+        assertNotNull(persistedPerson.getGender());
+        assertFalse(persistedPerson.getEnabled());
+
+        assertTrue(persistedPerson.getId() > 0);
+
+        assertEquals("Nelson", persistedPerson.getFirstName());
+        assertEquals("Piquet", persistedPerson.getLastName());
+        assertEquals("Brasília - DF - Brasil", persistedPerson.getAddress());
+        assertEquals("Male", persistedPerson.getGender());
+    }
+
+    @Test
+    @Order(3)
     public void testUpdate() throws JsonMappingException, JsonProcessingException {
         person.setLastName("Piquet Souto Maior");
 
@@ -143,6 +180,7 @@ public class PersonControllerXmlTest {
         assertNotNull(persistedPerson.getLastName());
         assertNotNull(persistedPerson.getAddress());
         assertNotNull(persistedPerson.getGender());
+        assertFalse(persistedPerson.getEnabled());
 
         assertEquals(person.getId(), persistedPerson.getId());
 
@@ -153,7 +191,7 @@ public class PersonControllerXmlTest {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     public void testFindById() throws JsonMappingException, JsonProcessingException {
         mockPerson();
 
@@ -179,6 +217,7 @@ public class PersonControllerXmlTest {
         assertNotNull(persistedPerson.getLastName());
         assertNotNull(persistedPerson.getAddress());
         assertNotNull(persistedPerson.getGender());
+        assertFalse(persistedPerson.getEnabled());
 
         assertEquals(person.getId(), persistedPerson.getId());
 
@@ -189,7 +228,7 @@ public class PersonControllerXmlTest {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     public void testDelete() throws JsonMappingException, JsonProcessingException {
 
         given().spec(specification)
@@ -203,7 +242,7 @@ public class PersonControllerXmlTest {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     public void testFindAll() throws JsonMappingException, JsonProcessingException {
 
         var content = given().spec(specification)
@@ -227,14 +266,14 @@ public class PersonControllerXmlTest {
         assertNotNull(foundPersonOne.getAddress());
         assertNotNull(foundPersonOne.getGender());
 
-        assertEquals(3, foundPersonOne.getId());
+        assertEquals(1, foundPersonOne.getId());
 
-        assertEquals("Paulo", foundPersonOne.getFirstName());
-        assertEquals("Dybala", foundPersonOne.getLastName());
-        assertEquals("Roma - Italy", foundPersonOne.getAddress());
+        assertEquals("Raphael", foundPersonOne.getFirstName());
+        assertEquals("Veiga", foundPersonOne.getLastName());
+        assertEquals("São Paulo", foundPersonOne.getAddress());
         assertEquals("Male", foundPersonOne.getGender());
 
-        PersonVO foundPersonSix = people.get(3);
+        PersonVO foundPersonSix = people.get(6);
 
         assertNotNull(foundPersonSix.getId());
         assertNotNull(foundPersonSix.getFirstName());
@@ -253,7 +292,7 @@ public class PersonControllerXmlTest {
 
 
     @Test
-    @Order(6)
+    @Order(7)
     public void testFindAllWithoutToken() throws JsonMappingException, JsonProcessingException {
 
         RequestSpecification specificationWithoutToken = new RequestSpecBuilder()
@@ -277,5 +316,6 @@ public class PersonControllerXmlTest {
         person.setLastName("Piquet");
         person.setAddress("Brasília - DF - Brasil");
         person.setGender("Male");
+        person.setEnabled(true);
     }
 }

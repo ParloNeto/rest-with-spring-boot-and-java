@@ -262,14 +262,14 @@ public class PersonControllerJsonTest {
         assertNotNull(foundPersonOne.getAddress());
         assertNotNull(foundPersonOne.getGender());
 
-        assertEquals(3, foundPersonOne.getId());
+        assertEquals(1, foundPersonOne.getId());
 
-        assertEquals("Paulo", foundPersonOne.getFirstName());
-        assertEquals("Dybala", foundPersonOne.getLastName());
-        assertEquals("Roma - Italy", foundPersonOne.getAddress());
+        assertEquals("Raphael", foundPersonOne.getFirstName());
+        assertEquals("Veiga", foundPersonOne.getLastName());
+        assertEquals("São Paulo", foundPersonOne.getAddress());
         assertEquals("Male", foundPersonOne.getGender());
 
-        PersonVO foundPersonSix = people.get(3);
+        PersonVO foundPersonSix = people.get(5);
 
         assertNotNull(foundPersonSix.getId());
         assertNotNull(foundPersonSix.getFirstName());
@@ -277,11 +277,11 @@ public class PersonControllerJsonTest {
         assertNotNull(foundPersonSix.getAddress());
         assertNotNull(foundPersonSix.getGender());
 
-        assertEquals(7, foundPersonSix.getId());
+        assertEquals(6, foundPersonSix.getId());
 
-        assertEquals("Antonie", foundPersonSix.getFirstName());
-        assertEquals("Griezmann", foundPersonSix.getLastName());
-        assertEquals("Paris - France", foundPersonSix.getAddress());
+        assertEquals("Romelu", foundPersonSix.getFirstName());
+        assertEquals("Lukaku", foundPersonSix.getLastName());
+        assertEquals("Genk - Belgium", foundPersonSix.getAddress());
         assertEquals("Male", foundPersonSix.getGender());
 
     }
