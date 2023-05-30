@@ -309,9 +309,46 @@ public class PersonControllerXmlTest {
 
     }
 
-
     @Test
     @Order(7)
+    public void testFindByName() throws JsonMappingException, JsonProcessingException {
+
+        var content = given().spec(specification)
+                .contentType(TestConfigs.CONTENT_TYPE_XML)
+                .accept(TestConfigs.CONTENT_TYPE_XML)
+                .pathParam("firstName", "rap")
+                .queryParams("page",0,"size", 6, "direction", "asc")
+                .when()
+                .get("findPersonsByName/{firstName}")
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .asString();
+
+        PagedModelPerson wrapper = objectMapper.readValue(content, PagedModelPerson.class);
+        var people = wrapper.getContent();
+
+        PersonVO foundPersonOne = people.get(0);
+
+        assertNotNull(foundPersonOne.getId());
+        assertNotNull(foundPersonOne.getFirstName());
+        assertNotNull(foundPersonOne.getLastName());
+        assertNotNull(foundPersonOne.getAddress());
+        assertNotNull(foundPersonOne.getGender());
+
+        assertEquals(1, foundPersonOne.getId());
+
+        assertEquals("Raphael", foundPersonOne.getFirstName());
+        assertEquals("Veiga", foundPersonOne.getLastName());
+        assertEquals("São Paulo", foundPersonOne.getAddress());
+        assertEquals("Male", foundPersonOne.getGender());
+
+    }
+
+
+    @Test
+    @Order(8)
     public void testFindAllWithoutToken() throws JsonMappingException, JsonProcessingException {
 
         RequestSpecification specificationWithoutToken = new RequestSpecBuilder()

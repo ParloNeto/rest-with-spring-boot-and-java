@@ -356,9 +356,51 @@ public class PersonControllerYamlTest {
         assertEquals("Male", foundPersonEight.getGender());
     }
 
-
     @Test
     @Order(7)
+    public void testFindByName() throws JsonMappingException, JsonProcessingException {
+
+        var wrapper = given().spec(specification)
+                .config(
+                        RestAssuredConfig
+                                .config()
+                                .encoderConfig(EncoderConfig.encoderConfig()
+                                        .encodeContentTypeAs(
+                                                TestConfigs.CONTENT_TYPE_YML,
+                                                ContentType.TEXT)))
+                .contentType(TestConfigs.CONTENT_TYPE_YML)
+                .accept(TestConfigs.CONTENT_TYPE_YML)
+                .pathParam("firstName", "rap")
+                .queryParams("page",0,"size", 6, "direction", "asc")
+                .when()
+                .get("findPersonsByName/{firstName}")
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .as(PagedModelPerson.class, objectMapper);
+
+        var people = wrapper.getContent();
+
+        PersonVO foundPersonOne = people.get(0);
+
+        assertNotNull(foundPersonOne.getId());
+        assertNotNull(foundPersonOne.getFirstName());
+        assertNotNull(foundPersonOne.getLastName());
+        assertNotNull(foundPersonOne.getAddress());
+        assertNotNull(foundPersonOne.getGender());
+
+        assertEquals(1, foundPersonOne.getId());
+
+        assertEquals("Raphael", foundPersonOne.getFirstName());
+        assertEquals("Veiga", foundPersonOne.getLastName());
+        assertEquals("São Paulo", foundPersonOne.getAddress());
+        assertEquals("Male", foundPersonOne.getGender());
+    }
+
+
+    @Test
+    @Order(8)
     public void testFindAllWithoutToken() throws JsonMappingException, JsonProcessingException {
 
         RequestSpecification specificationWithoutToken = new RequestSpecBuilder()
