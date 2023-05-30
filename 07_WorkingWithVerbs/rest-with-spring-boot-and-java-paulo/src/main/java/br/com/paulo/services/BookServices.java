@@ -1,17 +1,19 @@
 package br.com.paulo.services;
 
 import br.com.paulo.controllers.BookController;
-import br.com.paulo.controllers.PersonController;
 import br.com.paulo.data.vo.v1.BookVO;
 import br.com.paulo.data.vo.v1.PersonVO;
 import br.com.paulo.exceptions.RequiredObjectIsNullException;
 import br.com.paulo.exceptions.ResourceNotFoundException;
 import br.com.paulo.mapper.DozerMapper;
 import br.com.paulo.model.Book;
-import br.com.paulo.model.Person;
 import br.com.paulo.repositories.BookRepository;
-import br.com.paulo.repositories.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,15 +30,22 @@ public class BookServices {
     @Autowired
     BookRepository repository;
 
-    public List<BookVO> findAll() {
+    @Autowired
+    PagedResourcesAssembler<BookVO> assembler;
+
+    public PagedModel<EntityModel<BookVO>> findAll(Pageable pageable) {
 
         logger.info("Finding all books!");
 
-        var books = DozerMapper.parseListObjects(repository.findAll(), BookVO.class);
-        books
-                .stream()
-                .forEach(p -> p.add(linkTo(methodOn(BookController.class).findById(p.getKey())).withSelfRel()));
-        return books;
+        var bookPage = repository.findAll(pageable);
+
+        var bookVosPage = bookPage.map(p -> DozerMapper.parseObject(p, BookVO.class));
+        bookVosPage.map(
+                p -> p.add(linkTo(methodOn(BookController.class)
+                        .findById(p.getKey())).withSelfRel()));
+
+        Link link = linkTo(methodOn(BookController.class).findAll(pageable.getPageNumber(), pageable.getPageSize(), "asc")).withSelfRel();
+        return assembler.toModel(bookVosPage, link);
     }
 
     public BookVO findById(Long id) {
