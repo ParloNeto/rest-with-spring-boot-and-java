@@ -12,6 +12,8 @@ import integrationtests.vo.AccountCredentialsVO;
 import integrationtests.vo.BookVO;
 import integrationtests.vo.PersonVO;
 import integrationtests.vo.TokenVO;
+import integrationtests.vo.wrappers.WrapperBookVO;
+import integrationtests.vo.wrappers.WrapperPersonVO;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -198,6 +200,7 @@ public class BookControllerJsonTest {
 
         var content = given().spec(specification)
                 .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .queryParams("page",0,"size", 10, "direction", "asc")
                 .header(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_PAULO)
                 .when()
                 .get()
@@ -207,47 +210,41 @@ public class BookControllerJsonTest {
                 .body()
                 .asString();
 
-        List<BookVO> books = objectMapper.readValue(content, new TypeReference<List<BookVO>>() {});
+        WrapperBookVO wrapper = objectMapper.readValue(content, WrapperBookVO.class);
+        var books = wrapper.getEmbedded().getBooks();
 
-        BookVO foundFourthBook = books.get(2);
+        BookVO foundBookOne = books.get(0);
 
-        assertNotNull(foundFourthBook.getId());
-        assertNotNull(foundFourthBook.getAuthor());
-        assertNotNull(foundFourthBook.getPrice());
-        assertNotNull(foundFourthBook.getTitle());
+        assertNotNull(foundBookOne.getId());
+        assertNotNull(foundBookOne.getTitle());
+        assertNotNull(foundBookOne.getAuthor());
+        assertNotNull(foundBookOne.getPrice());
+        assertTrue(foundBookOne.getId() > 0);
+        assertEquals("Big Data: como extrair volume, variedade, velocidade e valor da avalanche de informação cotidiana", foundBookOne.getTitle());
+        assertEquals("Viktor Mayer-Schonberger e Kenneth Kukier", foundBookOne.getAuthor());
+        assertEquals(54.0, foundBookOne.getPrice());
 
-        assertEquals(3, foundFourthBook.getId());
+        BookVO foundBookFive = books.get(4);
 
-        assertEquals("Robert C. Martin", foundFourthBook.getAuthor());
-        assertEquals(77.00, foundFourthBook.getPrice());
-        assertEquals("Clean Code", foundFourthBook.getTitle());
+        assertNotNull(foundBookFive.getId());
+        assertNotNull(foundBookFive.getTitle());
+        assertNotNull(foundBookFive.getAuthor());
+        assertNotNull(foundBookFive.getPrice());
+        assertTrue(foundBookFive.getId() > 0);
+        assertEquals("Domain Driven Design", foundBookFive.getTitle());
+        assertEquals("Eric Evans", foundBookFive.getAuthor());
+        assertEquals(92.0, foundBookFive.getPrice());
 
-        BookVO foundSeventhBook = books.get(6);
+        BookVO foundBookEight = books.get(7);
 
-        assertNotNull(foundSeventhBook.getId());
-        assertNotNull(foundSeventhBook.getAuthor());
-        assertNotNull(foundSeventhBook.getPrice());
-        assertNotNull(foundSeventhBook.getTitle());
-
-        assertEquals(7, foundSeventhBook.getId());
-
-        assertEquals("Eric Freeman, Elisabeth Freeman, Kathy Sierra, Bert Bates", foundSeventhBook.getAuthor());
-        assertEquals(110.00, foundSeventhBook.getPrice());
-        assertEquals("Head First Design Patterns", foundSeventhBook.getTitle());
-
-        BookVO foundTwelfthBook = books.get(10);
-
-        assertNotNull(foundTwelfthBook.getId());
-        assertNotNull(foundTwelfthBook.getAuthor());
-        assertNotNull(foundTwelfthBook.getPrice());
-        assertNotNull(foundTwelfthBook.getTitle());
-
-        assertEquals(11, foundTwelfthBook.getId());
-
-        assertEquals("Roger S. Pressman", foundTwelfthBook.getAuthor());
-        assertEquals(56.00, foundTwelfthBook.getPrice());
-        assertEquals("Engenharia de Software: uma abordagem profissional", foundTwelfthBook.getTitle());
-
+        assertNotNull(foundBookEight.getId());
+        assertNotNull(foundBookEight.getTitle());
+        assertNotNull(foundBookEight.getAuthor());
+        assertNotNull(foundBookEight.getPrice());
+        assertTrue(foundBookEight.getId() > 0);
+        assertEquals("Implantando a governança de TI", foundBookEight.getTitle());
+        assertEquals("Aguinaldo Aragon Fernandes e Vladimir Ferraz de Abreu", foundBookEight.getAuthor());
+        assertEquals(54.0, foundBookEight.getPrice());
     }
 
     @Test

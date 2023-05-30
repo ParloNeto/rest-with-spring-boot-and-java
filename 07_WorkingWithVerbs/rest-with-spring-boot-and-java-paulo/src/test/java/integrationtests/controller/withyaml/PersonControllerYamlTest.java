@@ -15,6 +15,8 @@ import integrationtests.controller.withyaml.mapper.YMLMapper;
 import integrationtests.vo.AccountCredentialsVO;
 import integrationtests.vo.PersonVO;
 import integrationtests.vo.TokenVO;
+import integrationtests.vo.wrappers.WrapperPersonVO;
+import integrationtests.vo.wrappers.pagedModels.PagedModelPerson;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -287,7 +289,7 @@ public class PersonControllerYamlTest {
     @Order(6)
     public void testFindAll() throws JsonMappingException, JsonProcessingException {
 
-        var content = given().spec(specification)
+        var wrapper = given().spec(specification)
                 .config(
                         RestAssuredConfig
                                 .config()
@@ -297,15 +299,16 @@ public class PersonControllerYamlTest {
                                                 ContentType.TEXT)))
                 .contentType(TestConfigs.CONTENT_TYPE_YML)
                 .accept(TestConfigs.CONTENT_TYPE_YML)
+                .queryParams("page",3,"size", 10, "direction", "asc")
                 .when()
                 .get()
                 .then()
                 .statusCode(200)
                 .extract()
                 .body()
-                .as(PersonVO[].class, objectMapper);
+                .as(PagedModelPerson.class, objectMapper);
 
-        List<PersonVO> people = Arrays.asList(content);
+        var people = wrapper.getContent();
 
         PersonVO foundPersonOne = people.get(0);
 
@@ -314,13 +317,12 @@ public class PersonControllerYamlTest {
         assertNotNull(foundPersonOne.getLastName());
         assertNotNull(foundPersonOne.getAddress());
         assertNotNull(foundPersonOne.getGender());
-        assertTrue(foundPersonOne.getEnabled());
 
-        assertEquals(1, foundPersonOne.getId());
+        assertEquals(841, foundPersonOne.getId());
 
-        assertEquals("Raphael", foundPersonOne.getFirstName());
-        assertEquals("Veiga", foundPersonOne.getLastName());
-        assertEquals("São Paulo", foundPersonOne.getAddress());
+        assertEquals("Alexis", foundPersonOne.getFirstName());
+        assertEquals("Mullally", foundPersonOne.getLastName());
+        assertEquals("0098 Rigney Center", foundPersonOne.getAddress());
         assertEquals("Male", foundPersonOne.getGender());
 
         PersonVO foundPersonSix = people.get(5);
@@ -331,14 +333,27 @@ public class PersonControllerYamlTest {
         assertNotNull(foundPersonSix.getAddress());
         assertNotNull(foundPersonSix.getGender());
 
-        assertTrue(foundPersonSix.getEnabled());
+        assertEquals(717, foundPersonSix.getId());
 
-        assertEquals(6, foundPersonSix.getId());
+        assertEquals("Alla", foundPersonSix.getFirstName());
+        assertEquals("Astall", foundPersonSix.getLastName());
+        assertEquals("72525 Emmet Alley", foundPersonSix.getAddress());
+        assertEquals("Female", foundPersonSix.getGender());
 
-        assertEquals("Romelu", foundPersonSix.getFirstName());
-        assertEquals("Lukaku", foundPersonSix.getLastName());
-        assertEquals("Genk - Belgium", foundPersonSix.getAddress());
-        assertEquals("Male", foundPersonSix.getGender());
+        PersonVO foundPersonEight = people.get(8);
+
+        assertNotNull(foundPersonEight.getId());
+        assertNotNull(foundPersonEight.getFirstName());
+        assertNotNull(foundPersonEight.getLastName());
+        assertNotNull(foundPersonEight.getAddress());
+        assertNotNull(foundPersonEight.getGender());
+
+        assertEquals(800, foundPersonEight.getId());
+
+        assertEquals("Allin", foundPersonEight.getFirstName());
+        assertEquals("Emmot", foundPersonEight.getLastName());
+        assertEquals("7913 Lindbergh Way", foundPersonEight.getAddress());
+        assertEquals("Male", foundPersonEight.getGender());
     }
 
 

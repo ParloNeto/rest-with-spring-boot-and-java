@@ -7,6 +7,7 @@ import configs.TestConfigs;
 import integrationtests.vo.AccountCredentialsVO;
 import integrationtests.vo.PersonVO;
 import integrationtests.vo.TokenVO;
+import integrationtests.vo.wrappers.WrapperPersonVO;
 import io.restassured.builder.RequestSpecBuilder;
 
 import io.restassured.filter.log.LogDetail;
@@ -243,6 +244,7 @@ public class PersonControllerJsonTest {
 
         var content = given().spec(specification)
                 .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .queryParams("page",3,"size", 10, "direction", "asc")
                 .header(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_PAULO)
                 .when()
                 .get()
@@ -252,7 +254,8 @@ public class PersonControllerJsonTest {
                 .body()
                 .asString();
 
-        List<PersonVO> people = objectMapper.readValue(content, new TypeReference<List<PersonVO>>() {});
+        WrapperPersonVO wrapper = objectMapper.readValue(content, WrapperPersonVO.class);
+        var people = wrapper.getEmbedded().getPersons();
 
         PersonVO foundPersonOne = people.get(0);
 
@@ -262,11 +265,11 @@ public class PersonControllerJsonTest {
         assertNotNull(foundPersonOne.getAddress());
         assertNotNull(foundPersonOne.getGender());
 
-        assertEquals(1, foundPersonOne.getId());
+        assertEquals(841, foundPersonOne.getId());
 
-        assertEquals("Raphael", foundPersonOne.getFirstName());
-        assertEquals("Veiga", foundPersonOne.getLastName());
-        assertEquals("São Paulo", foundPersonOne.getAddress());
+        assertEquals("Alexis", foundPersonOne.getFirstName());
+        assertEquals("Mullally", foundPersonOne.getLastName());
+        assertEquals("0098 Rigney Center", foundPersonOne.getAddress());
         assertEquals("Male", foundPersonOne.getGender());
 
         PersonVO foundPersonSix = people.get(5);
@@ -277,12 +280,27 @@ public class PersonControllerJsonTest {
         assertNotNull(foundPersonSix.getAddress());
         assertNotNull(foundPersonSix.getGender());
 
-        assertEquals(6, foundPersonSix.getId());
+        assertEquals(717, foundPersonSix.getId());
 
-        assertEquals("Romelu", foundPersonSix.getFirstName());
-        assertEquals("Lukaku", foundPersonSix.getLastName());
-        assertEquals("Genk - Belgium", foundPersonSix.getAddress());
-        assertEquals("Male", foundPersonSix.getGender());
+        assertEquals("Alla", foundPersonSix.getFirstName());
+        assertEquals("Astall", foundPersonSix.getLastName());
+        assertEquals("72525 Emmet Alley", foundPersonSix.getAddress());
+        assertEquals("Female", foundPersonSix.getGender());
+
+        PersonVO foundPersonEight = people.get(8);
+
+        assertNotNull(foundPersonEight.getId());
+        assertNotNull(foundPersonEight.getFirstName());
+        assertNotNull(foundPersonEight.getLastName());
+        assertNotNull(foundPersonEight.getAddress());
+        assertNotNull(foundPersonEight.getGender());
+
+        assertEquals(800, foundPersonEight.getId());
+
+        assertEquals("Allin", foundPersonEight.getFirstName());
+        assertEquals("Emmot", foundPersonEight.getLastName());
+        assertEquals("7913 Lindbergh Way", foundPersonEight.getAddress());
+        assertEquals("Male", foundPersonEight.getGender());
 
     }
 

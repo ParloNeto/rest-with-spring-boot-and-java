@@ -11,6 +11,7 @@ import configs.TestConfigs;
 import integrationtests.controller.withyaml.mapper.YMLMapper;
 import integrationtests.vo.AccountCredentialsVO;
 import integrationtests.vo.BookVO;
+import integrationtests.vo.wrappers.pagedModels.PagedModelBook;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.EncoderConfig;
 import io.restassured.config.RestAssuredConfig;
@@ -202,22 +203,23 @@ public class BookControllerYamlTest {
     @Order(5)
     public void testFindAll() throws JsonMappingException, JsonProcessingException {
 
-        var content = given().spec(specification)
+        var wrapper = given().spec(specification)
                 .config(
                         RestAssuredConfig.config()
                                 .encoderConfig(EncoderConfig.encoderConfig()
                                         .encodeContentTypeAs(TestConfigs.CONTENT_TYPE_YML, ContentType.TEXT)))
                 .contentType(TestConfigs.CONTENT_TYPE_YML)
                 .accept(TestConfigs.CONTENT_TYPE_YML)
+                .queryParams("page",0,"size", 10, "direction", "asc")
                 .when()
                 .get()
                 .then()
                 .statusCode(200)
                 .extract()
                 .body()
-                .as(BookVO[].class, objectMapper);
+                .as(PagedModelBook.class, objectMapper);
 
-        List<BookVO> books = Arrays.asList(content);
+        var books = wrapper.getContent();
 
         BookVO foundBookOne = books.get(0);
 
@@ -226,9 +228,9 @@ public class BookControllerYamlTest {
         assertNotNull(foundBookOne.getAuthor());
         assertNotNull(foundBookOne.getPrice());
         assertTrue(foundBookOne.getId() > 0);
-        assertEquals("Working effectively with legacy code", foundBookOne.getTitle());
-        assertEquals("Michael C. Feathers", foundBookOne.getAuthor());
-        assertEquals(49.00, foundBookOne.getPrice());
+        assertEquals("Big Data: como extrair volume, variedade, velocidade e valor da avalanche de informação cotidiana", foundBookOne.getTitle());
+        assertEquals("Viktor Mayer-Schonberger e Kenneth Kukier", foundBookOne.getAuthor());
+        assertEquals(54.0, foundBookOne.getPrice());
 
         BookVO foundBookFive = books.get(4);
 
@@ -237,9 +239,20 @@ public class BookControllerYamlTest {
         assertNotNull(foundBookFive.getAuthor());
         assertNotNull(foundBookFive.getPrice());
         assertTrue(foundBookFive.getId() > 0);
-        assertEquals("Code complete", foundBookFive.getTitle());
-        assertEquals("Steve McConnell", foundBookFive.getAuthor());
-        assertEquals(58.0, foundBookFive.getPrice());
+        assertEquals("Domain Driven Design", foundBookFive.getTitle());
+        assertEquals("Eric Evans", foundBookFive.getAuthor());
+        assertEquals(92.0, foundBookFive.getPrice());
+
+        BookVO foundBookEight = books.get(7);
+
+        assertNotNull(foundBookEight.getId());
+        assertNotNull(foundBookEight.getTitle());
+        assertNotNull(foundBookEight.getAuthor());
+        assertNotNull(foundBookEight.getPrice());
+        assertTrue(foundBookEight.getId() > 0);
+        assertEquals("Implantando a governança de TI", foundBookEight.getTitle());
+        assertEquals("Aguinaldo Aragon Fernandes e Vladimir Ferraz de Abreu", foundBookEight.getAuthor());
+        assertEquals(54.0, foundBookEight.getPrice());
     }
 
 

@@ -10,6 +10,8 @@ import br.com.paulo.Startup;
 import configs.TestConfigs;
 import integrationtests.vo.AccountCredentialsVO;
 import integrationtests.vo.PersonVO;
+import integrationtests.vo.wrappers.WrapperPersonVO;
+import integrationtests.vo.wrappers.pagedModels.PagedModelPerson;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -248,6 +250,7 @@ public class PersonControllerXmlTest {
         var content = given().spec(specification)
                 .contentType(TestConfigs.CONTENT_TYPE_XML)
                 .accept(TestConfigs.CONTENT_TYPE_XML)
+                .queryParams("page",3,"size", 10, "direction", "asc")
                 .when()
                 .get()
                 .then()
@@ -256,7 +259,8 @@ public class PersonControllerXmlTest {
                 .body()
                 .asString();
 
-        List<PersonVO> people = objectMapper.readValue(content, new TypeReference<List<PersonVO>>() {});
+        PagedModelPerson wrapper = objectMapper.readValue(content, PagedModelPerson.class);
+        var people = wrapper.getContent();
 
         PersonVO foundPersonOne = people.get(0);
 
@@ -266,14 +270,14 @@ public class PersonControllerXmlTest {
         assertNotNull(foundPersonOne.getAddress());
         assertNotNull(foundPersonOne.getGender());
 
-        assertEquals(1, foundPersonOne.getId());
+        assertEquals(841, foundPersonOne.getId());
 
-        assertEquals("Raphael", foundPersonOne.getFirstName());
-        assertEquals("Veiga", foundPersonOne.getLastName());
-        assertEquals("São Paulo", foundPersonOne.getAddress());
+        assertEquals("Alexis", foundPersonOne.getFirstName());
+        assertEquals("Mullally", foundPersonOne.getLastName());
+        assertEquals("0098 Rigney Center", foundPersonOne.getAddress());
         assertEquals("Male", foundPersonOne.getGender());
 
-        PersonVO foundPersonSix = people.get(6);
+        PersonVO foundPersonSix = people.get(5);
 
         assertNotNull(foundPersonSix.getId());
         assertNotNull(foundPersonSix.getFirstName());
@@ -281,12 +285,27 @@ public class PersonControllerXmlTest {
         assertNotNull(foundPersonSix.getAddress());
         assertNotNull(foundPersonSix.getGender());
 
-        assertEquals(7, foundPersonSix.getId());
+        assertEquals(717, foundPersonSix.getId());
 
-        assertEquals("Antonie", foundPersonSix.getFirstName());
-        assertEquals("Griezmann", foundPersonSix.getLastName());
-        assertEquals("Paris - France", foundPersonSix.getAddress());
-        assertEquals("Male", foundPersonSix.getGender());
+        assertEquals("Alla", foundPersonSix.getFirstName());
+        assertEquals("Astall", foundPersonSix.getLastName());
+        assertEquals("72525 Emmet Alley", foundPersonSix.getAddress());
+        assertEquals("Female", foundPersonSix.getGender());
+
+        PersonVO foundPersonEight = people.get(8);
+
+        assertNotNull(foundPersonEight.getId());
+        assertNotNull(foundPersonEight.getFirstName());
+        assertNotNull(foundPersonEight.getLastName());
+        assertNotNull(foundPersonEight.getAddress());
+        assertNotNull(foundPersonEight.getGender());
+
+        assertEquals(800, foundPersonEight.getId());
+
+        assertEquals("Allin", foundPersonEight.getFirstName());
+        assertEquals("Emmot", foundPersonEight.getLastName());
+        assertEquals("7913 Lindbergh Way", foundPersonEight.getAddress());
+        assertEquals("Male", foundPersonEight.getGender());
 
     }
 
