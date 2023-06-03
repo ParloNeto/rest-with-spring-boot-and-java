@@ -1,10 +1,12 @@
 package br.com.paulo.controllers;
 
 import br.com.paulo.data.vo.v1.UploadFileResponseVO;
+import br.com.paulo.exceptions.MyFileNotFoundException;
 import br.com.paulo.services.FileStorageService;
 import br.com.paulo.services.PersonServices;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,4 +50,6 @@ public class FileController {
                 .map(file -> uploadFile(file))
                 .collect(Collectors.toList());
     }
+
+
 }
