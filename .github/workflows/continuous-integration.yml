@@ -27,15 +27,14 @@ jobs:
         cache: maven
         
     - name: Build Application JAR
-      working-directory: ./07_WorkingWithVerbs/rest-with-spring-boot-and-java-paulo
       run: mvn clean package
       
     - name: Docker Compose Build
-      working-directory: ./07_WorkingWithVerbs/rest-with-spring-boot-and-java-paulo
       run: docker compose build
       
     - name: Push to Docker Hub Container Registry
       run: |
         docker tag ${{ secrets.DOCKER_USERNAME }}/rest-with-spring-boot-paulo:latest parloneto/rest-with-spring-boot-paulo:${{ github.run_id }}
+        
         docker push ${{ secrets.DOCKER_USERNAME }}/rest-with-spring-boot-paulo:${{ github.run_id }}
         docker push ${{ secrets.DOCKER_USERNAME }}/rest-with-spring-boot-paulo:latest
