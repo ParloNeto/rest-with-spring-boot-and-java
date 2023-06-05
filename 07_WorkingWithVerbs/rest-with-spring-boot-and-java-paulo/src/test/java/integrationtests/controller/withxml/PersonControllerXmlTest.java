@@ -270,7 +270,7 @@ public class PersonControllerXmlTest {
         assertNotNull(foundPersonOne.getAddress());
         assertNotNull(foundPersonOne.getGender());
 
-        assertEquals(838, foundPersonOne.getId());
+        assertEquals(841, foundPersonOne.getId());
 
         assertEquals("Alexis", foundPersonOne.getFirstName());
         assertEquals("Mullally", foundPersonOne.getLastName());
@@ -285,7 +285,7 @@ public class PersonControllerXmlTest {
         assertNotNull(foundPersonSix.getAddress());
         assertNotNull(foundPersonSix.getGender());
 
-        assertEquals(714, foundPersonSix.getId());
+        assertEquals(717, foundPersonSix.getId());
 
         assertEquals("Alla", foundPersonSix.getFirstName());
         assertEquals("Astall", foundPersonSix.getLastName());
@@ -300,7 +300,7 @@ public class PersonControllerXmlTest {
         assertNotNull(foundPersonEight.getAddress());
         assertNotNull(foundPersonEight.getGender());
 
-        assertEquals(797, foundPersonEight.getId());
+        assertEquals(800, foundPersonEight.getId());
 
         assertEquals("Allin", foundPersonEight.getFirstName());
         assertEquals("Emmot", foundPersonEight.getLastName());
