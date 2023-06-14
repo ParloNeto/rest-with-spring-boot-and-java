@@ -1,9 +1,5 @@
 @import url(../../global.scss);
 
-#logoSecurity {
-    width: 45%;
-}
-
 #logo {
     width: 45%;
     margin-left: auto;
@@ -20,7 +16,7 @@
     display: flex;
     align-items: center;
     text-align: center;
-    justify-content: center;
+    justify-content: space-between;
     & section.form {
         width: 80%;
         max-width: 380px;
