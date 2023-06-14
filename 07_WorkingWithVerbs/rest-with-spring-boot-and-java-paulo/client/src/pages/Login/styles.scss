@@ -1,0 +1,36 @@
+@import url(../../global.scss);
+
+#logoSecurity {
+    width: 45%;
+}
+
+#logo {
+    width: 45%;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 1120px;
+    height: 100vh;
+    margin: 0 auto;
+   
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    & section.form {
+        width: 80%;
+        max-width: 380px;
+
+        & form {
+            margin-top: 40px;
+        }
+    }
+    & h1 {
+        color: rgb(167, 32, 14);
+        font-size: 28px;
+    }
+}

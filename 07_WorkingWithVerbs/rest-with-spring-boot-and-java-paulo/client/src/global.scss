@@ -1,0 +1,47 @@
+@import url(./config-scss/reset.scss);
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:wght@100;300;400;600;700&family=Roboto:wght@100;300;400;700&display=swap');
+
+body {
+    font: 600 14px Fira Sans, sans-serif;
+    background-color: #F0F0F5;
+}
+
+input, button, textarea {
+    font: 400 18px Fira Sans, sans-serif;
+}
+
+button {
+    cursor: pointer;
+}
+
+form input {
+    width: 87%;
+    height: 60px;
+    color: #333333;
+    border: 1px solid #DCDCE6;
+    border-radius: 8px;
+    padding: 0 24px;
+    margin-top: 16px;
+}
+
+.button {
+    width: 100%;
+    height: 60px;
+    background-color: #251FC5;
+    border: 0;
+    font-weight: 700;
+    margin-top: 16px;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    font-size: 18px;
+    line-height: 60px;
+    transition: filter 0.2s;
+    color: #F0F0F5;
+    
+}
+
+.button:hover {
+    color: #ffffff;
+    filter: brightness(80%);
+}
