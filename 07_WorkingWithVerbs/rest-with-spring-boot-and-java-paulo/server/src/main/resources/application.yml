@@ -1,3 +1,4 @@
+
 cors:
   originPatterns: http://localhost:3000,http://localhost:8080
 file:
@@ -10,8 +11,8 @@ security:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://rest-with-spring-boot-paulo.c3wzvkxhpza5.us-east-2.rds.amazonaws.com:3306/rest_with_spring_boot_paulo?useTimezone=true&serverTimezone=UTC
-    username: docker
+    url: jdbc:mysql://localhost:3306/rest_with_spring_boot_paulo?useTimezone=true&serverTimezone=UTC
+    username: root
     password: admin123
   jpa:
     hibernate:
