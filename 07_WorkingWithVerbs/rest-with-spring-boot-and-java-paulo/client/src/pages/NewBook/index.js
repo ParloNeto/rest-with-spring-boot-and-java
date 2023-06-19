@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, {useState, useEffect} from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi"
 
 import api from '../../services/api';
@@ -16,12 +16,40 @@ function NewBook() {
     const[price, setPrice] = useState('');
     const[title, setTitle] = useState('');
 
+    const {bookId} = useParams();
+
     const username = localStorage.getItem('username');
     const accessToken = localStorage.getItem('accessToken');
 
+    async function loadBook() {
+        try {
+            const response = await api.get(`api/book/v1/${bookId}`, {
+                headers: {
+                    Authorization:  `Bearer ${accessToken}`
+                }
+            })
+
+            let adjustedDate = response.data.launchDate.split("T", 10)[0];
+
+            setId(response.data.id);
+            setTitle(response.data.title);
+            setAuthor(response.data.author);
+            setPrice(response.data.price);
+            setLaunchDate(adjustedDate);
+        } catch (err) {
+            alert('Error recovering Book! Try again!')
+            navigate('/books');
+        }
+    }
+
+    useEffect(() => {
+        if (bookId === '0') return;
+        else loadBook();
+    }, [bookId])
+
     const navigate = useNavigate();
 
-    async function createNewBook(e) {
+    async function saveOrUpdate(e) {
         e.preventDefault();
 
         const data = {
@@ -32,11 +60,21 @@ function NewBook() {
         }
 
         try {
-            await api.post('api/book/v1', data, {
-                headers: {
-                    Authorization:  `Bearer ${accessToken}`
-                }
-            });
+            if (bookId === '0') {
+                await api.post('api/book/v1', data, {
+                    headers: {
+                        Authorization:  `Bearer ${accessToken}`
+                    }
+                });
+            } else {
+                data.id = id;
+                await api.put('api/book/v1', data, {
+                    headers: {
+                        Authorization:  `Bearer ${accessToken}`
+                    }
+                });
+            }
+            
             navigate('/books');
             
         } catch (err) {
@@ -49,14 +87,14 @@ function NewBook() {
            <div className="content">
             <section className="form">
                 <img src={logo} alt="Paulo Logo" />
-                <h1>Add New Book</h1>
-                <p>Enter the book information and click on 'Add'!</p>
+                <h1>{bookId === '0' ? 'Add New' : 'Update'} Book</h1>
+                <p>Enter the book information and click on {bookId === '0' ? "'Add'" : "'Update'"}</p>
                 <Link className="back-link" to="/books">
                     <FiArrowLeft size={16} color="#251FC5"/>
                     Home
                 </Link>
             </section>
-            <form onSubmit={createNewBook}>
+            <form onSubmit={saveOrUpdate}>
                 <input
                  placeholder="Title"
                  value={title}
@@ -77,8 +115,7 @@ function NewBook() {
                  value={price}
                  onChange={e => setPrice(e.target.value)}
                  />
-
-                <button className="button" type="submit">Add</button>
+                <button className="button" type="submit">{bookId === '0' ? 'Add' : 'Update'}</button>
             </form>
             </div> 
         </div>
